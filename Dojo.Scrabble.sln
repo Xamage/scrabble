@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dojo.Scrabble", "Dojo.Scrabble\Dojo.Scrabble.csproj", "{54758496-8645-4861-B84A-DBE3AA54C67A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dojo.Scrabble.Tests", "Dojo.Scrabble.Tests\Dojo.Scrabble.Tests.csproj", "{40E48567-37E0-4F7B-AB5D-AACFE7C3ABAC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{54758496-8645-4861-B84A-DBE3AA54C67A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54758496-8645-4861-B84A-DBE3AA54C67A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54758496-8645-4861-B84A-DBE3AA54C67A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54758496-8645-4861-B84A-DBE3AA54C67A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40E48567-37E0-4F7B-AB5D-AACFE7C3ABAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40E48567-37E0-4F7B-AB5D-AACFE7C3ABAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40E48567-37E0-4F7B-AB5D-AACFE7C3ABAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40E48567-37E0-4F7B-AB5D-AACFE7C3ABAC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
