@@ -107,7 +107,7 @@ namespace Dojo.Scrabble
 
             public Noeud(char? lettre = null)
             {
-                SousNoeuds = new SortedDictionary<char, Noeud>();
+                SousNoeuds = new Dictionary<char, Noeud>();
 
                 if (lettre.HasValue)
                     LettreCorrespondante = lettre;
@@ -121,7 +121,7 @@ namespace Dojo.Scrabble
 
             private string MotCorrespondant { get; set; }
 
-            private SortedDictionary<char, Noeud> SousNoeuds { get; set; }
+            private Dictionary<char, Noeud> SousNoeuds { get; set; }
 
             #endregion
 
