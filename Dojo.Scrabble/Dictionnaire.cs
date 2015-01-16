@@ -17,9 +17,9 @@ namespace Dojo.Scrabble
         {
             Dictionnaire dictionnaire = new Dictionnaire();
 
-            foreach (string word in File.ReadAllLines(filePath))
+            foreach (string mot in File.ReadAllLines(filePath))
             {
-                dictionnaire._racine.AjouterMot(word);
+                dictionnaire._racine.AjouterMot(mot, mot);
             }
 
             return dictionnaire;
@@ -30,50 +30,12 @@ namespace Dojo.Scrabble
         #region Public Methods
 
         /// <summary>
-        /// Recherche tous les mots pour un chevalet
-        /// </summary>
-        public IEnumerable<string> TrouverTousLesMots(Chevalet chevalet)
-        {
-            return TrouverTousLesMots(chevalet.GetAllCombinaisons());
-        }
-
-        /// <summary>
         /// Recherche tous les mots les plus longs pour un chevalet
         /// </summary>
         public IEnumerable<string> TrouverLesMotLesPlusLongs(Chevalet chevalet)
         {
-            return TrouverLesMotLesPlusLongs(chevalet.GetAllCombinaisons());
-        }
-
-        /// <summary>
-        /// Recherche tous les mots les plus forts pour un chevalet
-        /// </summary>
-        public IEnumerable<string> TrouverLesMotLesPlusForts(Chevalet chevalet)
-        {
-            return TrouverLesMotLesPlusForts(chevalet.GetAllCombinaisons());
-        }
-
-        #endregion
-
-        #region Helpers
-
-        private IEnumerable<string> TrouverTousLesMots(IEnumerable<string> combinaisons)
-        {
-            MatchCollection results = new MatchCollection();
-
-            foreach (string combinaison in combinaisons)
-            {
-                // Recherche dans l'arbre des mots pouvant correspondre à cette combinaison de lettres
-                _racine.ChercherCorrespondances(combinaison, results);
-            }
-
-            return results;
-        }
-
-        private IEnumerable<string> TrouverLesMotLesPlusLongs(IEnumerable<string> combinaisons)
-        {
             // Recherche des mots possibles pour l'ensemble des combinaisons possibles
-            var resultats = TrouverTousLesMots(combinaisons);
+            var resultats = TrouverTousLesMots(chevalet.GetAllCombinaisons());
 
             // Récupération de la longueur du mot le plus long
             var longueurMax = resultats.Max(mot => mot.Length);
@@ -82,16 +44,36 @@ namespace Dojo.Scrabble
             return resultats.Where(mot => mot.Length == longueurMax).ToList();
         }
 
-        private IEnumerable<string> TrouverLesMotLesPlusForts(IEnumerable<string> combinaisons)
+        /// <summary>
+        /// Recherche tous les mots les plus forts pour un chevalet
+        /// </summary>
+        public IEnumerable<string> TrouverLesMotLesPlusForts(Chevalet chevalet)
         {
             // Recherche des mots possibles pour l'ensemble des combinaisons possibles
-            var resultats = TrouverTousLesMots(combinaisons);
+            var resultats = TrouverTousLesMots(chevalet.GetAllCombinaisons());
 
             // Récupération de la valeur du mot le plus fort
             var valeurMax = resultats.Max(mot => Mot.GetValeur(mot));
 
             // Récupération de tous les mots ayant cette valeur
             return resultats.Where(mot => Mot.GetValeur(mot) == valeurMax).ToList();
+        }
+
+        #endregion
+
+        #region Helpers
+
+        private IEnumerable<string> TrouverTousLesMots(IEnumerable<string> combinaisons)
+        {
+            Correspondances results = new Correspondances();
+
+            foreach (string combinaison in combinaisons)
+            {
+                // Recherche dans l'arbre des mots pouvant correspondre à cette combinaison de lettres
+                _racine.ChercherCorrespondances(string.Empty, combinaison, results);
+            }
+
+            return results.Distinct();
         }
 
         #endregion
@@ -126,36 +108,13 @@ namespace Dojo.Scrabble
             #endregion
 
             #region Public methods
-
-            /// <summary>
-            /// Ajoute un mot dans l'arbre
-            /// </summary>
-            /// <param name="mot"></param>
-            public void AjouterMot(string mot)
-            {
-                AjouterMot(mot, mot);
-            }
-
-            /// <summary>
-            /// Recherche dans l'arbre les mots correspondants à la suite de lettres spécifiée
-            /// </summary>
-            /// <param name="mot"></param>
-            /// <param name="correspondances"></param>
-            public void ChercherCorrespondances(string mot, MatchCollection correspondances)
-            {
-                ChercherCorrespondances(string.Empty, mot, correspondances);
-            }
-
-            #endregion
-
-            #region Helpers
-
+            
             /// <summary>
             /// Ajoute un mot dans l'arbre de manière récursive
             /// </summary>
             /// <param name="mot">Le mot à ajouter</param>
             /// <param name="motRestant">Les lettres restant à traiter pour l'ajout du mot dans l'arbre</param>
-            private void AjouterMot(string mot, string motRestant)
+            public void AjouterMot(string mot, string motRestant)
             {
                 if (!string.IsNullOrEmpty(motRestant))
                 {
@@ -183,7 +142,7 @@ namespace Dojo.Scrabble
             /// <param name="debut">Les lettres déjà parcourues</param>
             /// <param name="motRestant">Les lettres restant à traiter pour la descente dans l'arbre</param>
             /// <param name="correspondances">L'ensemble des correspondances trouvées avec les lettres déjà parcourues dans l'arbre</param>
-            private void ChercherCorrespondances(string debut, string motRestant, MatchCollection correspondances)
+            public void ChercherCorrespondances(string debut, string motRestant, Correspondances correspondances)
             {
                 if (!string.IsNullOrEmpty(MotCorrespondant) && debut == MotCorrespondant)
                 {
@@ -217,13 +176,6 @@ namespace Dojo.Scrabble
             }
 
             #endregion
-        }
-
-        /// <summary>
-        /// Représente une collection de résultats / correspondances
-        /// </summary>
-        class MatchCollection : List<string>
-        {
         }
 
         #endregion

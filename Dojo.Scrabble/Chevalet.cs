@@ -6,9 +6,9 @@ namespace Dojo.Scrabble
 {
     public class Chevalet
     {
-        public Chevalet()
+        public Chevalet(string lettres = null)
         {
-            Lettres = string.Empty;
+            Lettres = lettres ?? string.Empty;
         }
 
         public string Lettres { get; private set; }

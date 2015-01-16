@@ -40,6 +40,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chevalet.cs" />
+    <Compile Include="Correspondances.cs" />
+    <Compile Include="Dictionnaire2.cs" />
     <Compile Include="Dictionnaire.cs" />
     <Compile Include="Lettre.cs" />
     <Compile Include="Mot.cs">
