@@ -10,7 +10,7 @@ namespace Dojo.Scrabble.Tests
         [TestMethod]
         public void TestCombinaisonsAuHasard()
         {
-            Sac sac = Sac.FromFile(@"C:\dojo\Scrabble\Lettres.txt");
+            Sac sac = Sac.FromFile(@"C:\github\scrabble\Lettres.txt");
 
             Chevalet chevalet = new Chevalet();
             chevalet.Ajouter(sac.TirerLettres(7));
@@ -23,7 +23,7 @@ namespace Dojo.Scrabble.Tests
         [TestMethod]
         public void TestCombinaisonsAvecTocaabs()
         {
-            Sac sac = Sac.FromFile(@"C:\dojo\Scrabble\Lettres.txt");
+            Sac sac = Sac.FromFile(@"C:\github\scrabble\Lettres.txt");
 
             Chevalet chevalet = new Chevalet();
             chevalet.Ajouter("TOCAABS");
@@ -36,7 +36,7 @@ namespace Dojo.Scrabble.Tests
         [TestMethod]
         public void TestCombinaisonsAvecAvflein()
         {
-            Sac sac = Sac.FromFile(@"C:\dojo\Scrabble\Lettres.txt");
+            Sac sac = Sac.FromFile(@"C:\github\scrabble\Lettres.txt");
 
             Chevalet chevalet = new Chevalet();
             chevalet.Ajouter("AVFLEIN");

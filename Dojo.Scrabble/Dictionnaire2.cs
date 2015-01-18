@@ -1,5 +1,7 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -14,7 +16,7 @@ namespace Dojo.Scrabble
 
         #region Static
 
-        public static Dictionnaire2 FromFile(string filePath)
+        public static Dictionnaire2 Charger(string filePath)
         {
             Dictionnaire2 dictionnaire = new Dictionnaire2();
 
@@ -36,7 +38,7 @@ namespace Dojo.Scrabble
         /// <summary>
         /// Recherche tous les mots les plus longs pour un chevalet
         /// </summary>
-        public IEnumerable<string> TrouverLesMotLesPlusLongs(Chevalet chevalet)
+        public IEnumerable<string> TrouverLesMotsLesPlusLongs(Chevalet chevalet)
         {
             // Recherche des mots possibles pour l'ensemble des combinaisons possibles
             var resultats = TrouverTousLesMots(chevalet);
@@ -51,7 +53,7 @@ namespace Dojo.Scrabble
         /// <summary>
         /// Recherche tous les mots les plus forts pour un chevalet
         /// </summary>
-        public IEnumerable<string> TrouverLesMotLesPlusForts(Chevalet chevalet)
+        public IEnumerable<string> TrouverLesMotsLesPlusForts(Chevalet chevalet)
         {
             // Recherche des mots possibles pour l'ensemble des combinaisons possibles
             var resultats = TrouverTousLesMots(chevalet);
@@ -72,15 +74,17 @@ namespace Dojo.Scrabble
         /// </summary>
         private IEnumerable<string> TrouverTousLesMots(Chevalet chevalet)
         {
-            char[] lettres = chevalet.Lettres.ToArray();
-            Array.Sort(lettres, new LettresComparer());
+            string lettresBlanches = new string(chevalet.Lettres.Where(c => c == '#').ToArray());
+            string lettres = chevalet.Lettres.Replace("#", "");
+            char[] lettresTriees = lettres.ToArray();
+            Array.Sort(lettresTriees);
 
             Correspondances correspondances = new Correspondances();
 
             // Recherche dans l'arbre des mots pouvant correspondre à cette combinaison de lettres
             for (int i = 0; i < lettres.Length; i++)
             {
-                _racine.ChercherMots(new string(lettres), correspondances, i);
+                _racine.ChercherMots(new string(lettresTriees), lettresBlanches, correspondances, i);
             }
 
             return correspondances.Distinct();
@@ -93,6 +97,7 @@ namespace Dojo.Scrabble
         /// <summary>
         /// Représente un arbre de lettres / mots. A chaque noeud est associée une lettre et éventuellement un mot si le noeud courant et ses parents forment un mot existant.
         /// </summary>
+        [DebuggerDisplay("{LettreCorrespondante}")]
         class Noeud
         {
             #region Ctor
@@ -147,10 +152,9 @@ namespace Dojo.Scrabble
             /// <summary>
             /// Recherche dans l'arbre les mots correspondants à la suite de lettres spécifiée
             /// </summary>
-            public void ChercherMots(string lettres, Correspondances correspondances, int index = 0, bool traite = false)
+            public void ChercherMots(string lettres, string lettresBlanches, Correspondances correspondances, int index = 0)
             {
-                // 'traite' indique si les mots du noeuds courant ont déjà été ajoutés (utile en cas de récursivité sur le même noeud)
-                if (!traite && MotsCorrespondants.Any())
+                if (MotsCorrespondants.Any())
                 {
                     correspondances.AddRange(MotsCorrespondants);
                 }
@@ -159,39 +163,29 @@ namespace Dojo.Scrabble
                 {
                     char initial = lettres[index];
 
-                    if (initial == Lettre.LettreBlanche)
-                    {
-                        foreach (Noeud sousNoeud in SousNoeuds.Values)
-                        {
-                            sousNoeud.ChercherMots(lettres, correspondances, index + 1);
-                        }
-                    }
-                    else
-                    {
-                        Noeud sousNoeud;
+                    Noeud sousNoeud;
 
-                        if (SousNoeuds.TryGetValue(initial, out sousNoeud))
+                    if (SousNoeuds.TryGetValue(initial, out sousNoeud))
+                    {
+                        // On descend dans l'arbre
+                        sousNoeud.ChercherMots(lettres, lettresBlanches, correspondances, index + 1);
+                    }
+                    
+                    if (lettresBlanches.Any()) 
+                    {
+                        foreach (Noeud sn in SousNoeuds.Values)
                         {
-                            // On descend dans l'arbre
-                            sousNoeud.ChercherMots(lettres, correspondances, index + 1);
+                            sn.ChercherMots(lettres, lettresBlanches.Substring(1), correspondances, index);
                         }
                     }
                 }
-            }
-
-            #endregion
-        }
-
-        class LettresComparer : IComparer<char>
-        {
-            #region IComparer<char> Membres
-
-            public int Compare(char x, char y)
-            {
-                if (x == y)
-                    return 0;
-
-                return x == '#' || y == '#' ? 1 - x.CompareTo(y) : x.CompareTo(y);
+                else if (lettresBlanches.Any())
+                {
+                    foreach (Noeud sn in SousNoeuds.Values)
+                    {
+                        sn.ChercherMots(lettres, lettresBlanches.Substring(1), correspondances, index);
+                    }
+                }
             }
 
             #endregion

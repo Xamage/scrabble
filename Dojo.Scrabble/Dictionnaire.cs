@@ -13,7 +13,7 @@ namespace Dojo.Scrabble
 
         #region Static
 
-        public static Dictionnaire FromFile(string filePath)
+        public static Dictionnaire Charger(string filePath)
         {
             Dictionnaire dictionnaire = new Dictionnaire();
 
@@ -144,7 +144,7 @@ namespace Dojo.Scrabble
             /// <param name="correspondances">L'ensemble des correspondances trouvées avec les lettres déjà parcourues dans l'arbre</param>
             public void ChercherCorrespondances(string debut, string motRestant, Correspondances correspondances)
             {
-                if (!string.IsNullOrEmpty(MotCorrespondant) && debut == MotCorrespondant)
+                if (!string.IsNullOrEmpty(MotCorrespondant) /*&& debut == MotCorrespondant*/)
                 {
                     correspondances.Add(MotCorrespondant);
                 }

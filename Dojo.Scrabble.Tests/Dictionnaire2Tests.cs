@@ -6,9 +6,9 @@ using System;
 namespace Dojo.Scrabble.Tests
 {
     [TestClass]
-    public class DictionnaireTests
+    public class Dictionnaire2Tests
     {
-        static readonly Dictionnaire _dictionnaire = Dictionnaire.Charger(@"C:\github\scrabble\ListeMots.txt");
+        static readonly Dictionnaire2 _dictionnaire = Dictionnaire2.Charger(@"C:\github\scrabble\ListeMots.txt");
         static Sac _sac = Sac.FromFile(@"C:\github\scrabble\Lettres.txt"); // Il faut charger un sac pour avoir les valeurs des lettres
 
         private TestContext testContextInstance;
@@ -28,20 +28,20 @@ namespace Dojo.Scrabble.Tests
         {
             Chevalet chevalet = new Chevalet("TOCAABS");
 
-            var actual = _dictionnaire.TrouverLesMotLesPlusLongs(chevalet);
+            var actual = _dictionnaire.TrouverLesMotsLesPlusLongs(chevalet);
 
             Assert.IsTrue(actual.Count() == 3, "");
             Assert.IsTrue(actual.Any(m => m == "TABASCO"), "TABASCO n'a pas été trouvé");
             Assert.IsTrue(actual.Any(m => m == "CABOTAS"), "CABOTAS n'a pas été trouvé");
             Assert.IsTrue(actual.Any(m => m == "ABACOST"), "ABACOST n'a pas été trouvé");
         }
-        
+
         [TestMethod]
         public void TrouverLePlusFortAvecTocaabs()
         {
             Chevalet chevalet = new Chevalet("TOCAABS");
 
-            var actual = _dictionnaire.TrouverLesMotLesPlusForts(chevalet);
+            var actual = _dictionnaire.TrouverLesMotsLesPlusForts(chevalet);
 
             Assert.IsTrue(actual.Count() == 3, "");
             Assert.IsTrue(actual.Any(m => m == "TABASCO"), "TABASCO n'a pas été trouvé");
@@ -54,7 +54,7 @@ namespace Dojo.Scrabble.Tests
         {
             Chevalet chevalet = new Chevalet("KKKTZUK");
 
-            var actual = _dictionnaire.TrouverLesMotLesPlusLongs(chevalet);
+            var actual = _dictionnaire.TrouverLesMotsLesPlusLongs(chevalet);
 
             Assert.IsTrue(actual.Any(m => m == "ZUT"), "ZUT n'a pas été trouvé");
         }
@@ -64,7 +64,7 @@ namespace Dojo.Scrabble.Tests
         {
             Chevalet chevalet = new Chevalet("KKKTZUK");
 
-            var actual = _dictionnaire.TrouverLesMotLesPlusForts(chevalet);
+            var actual = _dictionnaire.TrouverLesMotsLesPlusForts(chevalet);
 
             Assert.IsTrue(actual.Count() == 1, "La recherche n'a pas retourné le bon nombre de résultats");
             Assert.IsTrue(actual.Any(m => m == "ZUT"), "ZUT n'a pas été trouvé");
@@ -75,7 +75,7 @@ namespace Dojo.Scrabble.Tests
         {
             Chevalet chevalet = new Chevalet("BN#");
 
-            var actual = _dictionnaire.TrouverLesMotLesPlusLongs(chevalet);
+            var actual = _dictionnaire.TrouverLesMotsLesPlusLongs(chevalet);
 
             Assert.IsTrue(actual.Count() == 6, "La recherche n'a pas retourné le bon nombre de résultats");
             Assert.IsTrue(actual.Any(m => m == "BAN"), "BAN n'a pas été trouvé");
@@ -91,7 +91,7 @@ namespace Dojo.Scrabble.Tests
         {
             Chevalet chevalet = new Chevalet("#B#");
 
-            var actual = _dictionnaire.TrouverLesMotLesPlusLongs(chevalet);
+            var actual = _dictionnaire.TrouverLesMotsLesPlusLongs(chevalet);
 
             Assert.AreEqual(62, actual.Count(), "La recherche n'a pas retourné le bon nombre de résultats");
             Assert.IsTrue(actual.Any(m => m == "BAN"), "BAN n'a pas été trouvé");
@@ -107,7 +107,7 @@ namespace Dojo.Scrabble.Tests
         {
             Chevalet chevalet = new Chevalet("T#I#STE");
 
-            var actual = _dictionnaire.TrouverLesMotLesPlusLongs(chevalet);
+            var actual = _dictionnaire.TrouverLesMotsLesPlusLongs(chevalet);
 
             Assert.AreEqual(139, actual.Count(), "La recherche n'a pas retourné le bon nombre de résultats");
         }
@@ -115,39 +115,35 @@ namespace Dojo.Scrabble.Tests
         [TestMethod]
         public void TempsChargement()
         {
-            Dictionnaire dictionnaire = null;
+            Dictionnaire2 dictionnaire = null;
             string[] combinaisons = null;
             Chevalet chevalet = new Chevalet("TOCAABS");
             long elapsed;
-
+             
             // Chargement du dictionnaire
-            elapsed = Chronometrer(() => dictionnaire = Dictionnaire.Charger(@"C:\github\scrabble\ListeMots.txt"));
+            elapsed = Chronometrer(() => dictionnaire = Dictionnaire2.Charger(@"C:\github\scrabble\ListeMots.txt"));
             TestContext.WriteLine("Temps de chargement du dictionnaire : {0} ms", elapsed);
 
             // Chargement du sac de lettres
             elapsed = Chronometrer(() => Sac.FromFile(@"C:\github\scrabble\Lettres.txt"));
             TestContext.WriteLine("Temps de chargement du sac : {0} ms", elapsed);
 
-            // Génération des combinaisons
-            elapsed = Chronometrer(() => combinaisons = chevalet.GetAllCombinaisons().ToArray());
-            TestContext.WriteLine("Temps de génération des {0} combinaisons : {1} ms", combinaisons.Length, elapsed);
-
             // Recherche des mots les plus longs
-            elapsed = Chronometrer(() => dictionnaire.TrouverLesMotLesPlusLongs(chevalet));
+            elapsed = Chronometrer(() => dictionnaire.TrouverLesMotsLesPlusLongs(chevalet));
             TestContext.WriteLine("Temps de recherche des mots les plus longs pour 'TOCAABS' : {0} ms", elapsed);
 
             // Recherche des mots les plus forts
-            elapsed = Chronometrer(() => dictionnaire.TrouverLesMotLesPlusForts(chevalet));
+            elapsed = Chronometrer(() => dictionnaire.TrouverLesMotsLesPlusForts(chevalet));
             TestContext.WriteLine("Temps de recherche des mots les plus forts pour 'TOCAABS' : {0} ms", elapsed);
 
             chevalet = new Chevalet("T#I#STE");
 
             // Recherche des mots les plus longs
-            elapsed = Chronometrer(() => dictionnaire.TrouverLesMotLesPlusLongs(chevalet));
+            elapsed = Chronometrer(() => dictionnaire.TrouverLesMotsLesPlusLongs(chevalet));
             TestContext.WriteLine("Temps de recherche des mots les plus longs pour 'T#I#STE' : {0} ms", elapsed);
 
             // Recherche des mots les plus forts
-            elapsed = Chronometrer(() => dictionnaire.TrouverLesMotLesPlusForts(chevalet));
+            elapsed = Chronometrer(() => dictionnaire.TrouverLesMotsLesPlusForts(chevalet));
             TestContext.WriteLine("Temps de recherche des mots les plus forts pour 'T#I#STE' : {0} ms", elapsed);
         }
 
