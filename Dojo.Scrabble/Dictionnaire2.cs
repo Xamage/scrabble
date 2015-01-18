@@ -169,17 +169,10 @@ namespace Dojo.Scrabble
                     {
                         // On descend dans l'arbre
                         sousNoeud.ChercherMots(lettres, lettresBlanches, correspondances, index + 1);
-                    }
-                    
-                    if (lettresBlanches.Any()) 
-                    {
-                        foreach (Noeud sn in SousNoeuds.Values)
-                        {
-                            sn.ChercherMots(lettres, lettresBlanches.Substring(1), correspondances, index);
-                        }
-                    }
+                    }                    
                 }
-                else if (lettresBlanches.Any())
+                
+                if (lettresBlanches.Any())
                 {
                     foreach (Noeud sn in SousNoeuds.Values)
                     {
