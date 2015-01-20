@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,17 +9,17 @@ namespace Dojo.Scrabble
     /// <summary>
     /// Contient l'ensemble des mots connus et expose des méthodes permettant de rechercher des correspondances avec des combinaisons de lettres
     /// </summary>
-    public class Dictionnaire2
+    public class Dictionnaire2 : IDictionnaire
     {
         private readonly Noeud _racine = new Noeud();
 
         #region Static
 
-        public static Dictionnaire2 Charger(string filePath)
+        public static Dictionnaire2 Charger(string fichier)
         {
             Dictionnaire2 dictionnaire = new Dictionnaire2();
 
-            foreach (string mot in File.ReadAllLines(filePath))
+            foreach (string mot in File.ReadAllLines(fichier))
             {
                 char[] lettres = mot.ToArray();
                 Array.Sort(lettres);
@@ -34,6 +33,27 @@ namespace Dojo.Scrabble
         #endregion
 
         #region Public Methods
+
+        /// <summary>
+        /// Recherche tous les mots pour un chevalet
+        /// </summary>
+        public IEnumerable<string> TrouverTousLesMots(Chevalet chevalet)
+        {
+            string lettresBlanches = new string(chevalet.Lettres.Where(c => c == '#').ToArray());
+            string lettres = chevalet.Lettres.Replace("#", "");
+            char[] lettresTriees = lettres.ToArray();
+            Array.Sort(lettresTriees);
+
+            Correspondances correspondances = new Correspondances();
+
+            // Recherche dans l'arbre des mots pouvant correspondre à cette combinaison de lettres
+            for (int i = 0; i < lettres.Length; i++)
+            {
+                _racine.ChercherMots(new string(lettresTriees), lettresBlanches, correspondances, i);
+            }
+
+            return correspondances.Distinct();
+        }
 
         /// <summary>
         /// Recherche tous les mots les plus longs pour un chevalet
@@ -67,37 +87,11 @@ namespace Dojo.Scrabble
 
         #endregion
 
-        #region Helpers
-
-        /// <summary>
-        /// Recherche tous les mots pour un chevalet
-        /// </summary>
-        private IEnumerable<string> TrouverTousLesMots(Chevalet chevalet)
-        {
-            string lettresBlanches = new string(chevalet.Lettres.Where(c => c == '#').ToArray());
-            string lettres = chevalet.Lettres.Replace("#", "");
-            char[] lettresTriees = lettres.ToArray();
-            Array.Sort(lettresTriees);
-
-            Correspondances correspondances = new Correspondances();
-
-            // Recherche dans l'arbre des mots pouvant correspondre à cette combinaison de lettres
-            for (int i = 0; i < lettres.Length; i++)
-            {
-                _racine.ChercherMots(new string(lettresTriees), lettresBlanches, correspondances, i);
-            }
-
-            return correspondances.Distinct();
-        }
-
-        #endregion
-
         #region Inner classes
 
         /// <summary>
         /// Représente un arbre de lettres / mots. A chaque noeud est associée une lettre et éventuellement un mot si le noeud courant et ses parents forment un mot existant.
         /// </summary>
-        [DebuggerDisplay("{LettreCorrespondante}")]
         class Noeud
         {
             #region Ctor

@@ -7,17 +7,17 @@ namespace Dojo.Scrabble
     /// <summary>
     /// Contient l'ensemble des mots connus et expose des méthodes permettant de rechercher des correspondances avec des combinaisons de lettres
     /// </summary>
-    public class Dictionnaire
+    public class Dictionnaire : IDictionnaire
     {
         private readonly Noeud _racine = new Noeud();
 
         #region Static
 
-        public static Dictionnaire Charger(string filePath)
+        public static Dictionnaire Charger(string fichier)
         {
             Dictionnaire dictionnaire = new Dictionnaire();
 
-            foreach (string mot in File.ReadAllLines(filePath))
+            foreach (string mot in File.ReadAllLines(fichier))
             {
                 dictionnaire._racine.AjouterMot(mot, mot);
             }
@@ -30,12 +30,30 @@ namespace Dojo.Scrabble
         #region Public Methods
 
         /// <summary>
+        /// Recherche tous les mots possibles pour un chevalet
+        /// </summary>
+        /// <param name="chevalet"></param>
+        /// <returns></returns>
+        public IEnumerable<string> TrouverTousLesMots(Chevalet chevalet)
+        {
+            Correspondances results = new Correspondances();
+
+            foreach (string combinaison in chevalet.GetAllCombinaisons())
+            {
+                // Recherche dans l'arbre des mots pouvant correspondre à cette combinaison de lettres
+                _racine.ChercherCorrespondances(string.Empty, combinaison, results);
+            }
+
+            return results.Distinct();
+        }
+
+        /// <summary>
         /// Recherche tous les mots les plus longs pour un chevalet
         /// </summary>
-        public IEnumerable<string> TrouverLesMotLesPlusLongs(Chevalet chevalet)
+        public IEnumerable<string> TrouverLesMotsLesPlusLongs(Chevalet chevalet)
         {
             // Recherche des mots possibles pour l'ensemble des combinaisons possibles
-            var resultats = TrouverTousLesMots(chevalet.GetAllCombinaisons());
+            var resultats = TrouverTousLesMots(chevalet);
 
             // Récupération de la longueur du mot le plus long
             var longueurMax = resultats.Max(mot => mot.Length);
@@ -47,33 +65,16 @@ namespace Dojo.Scrabble
         /// <summary>
         /// Recherche tous les mots les plus forts pour un chevalet
         /// </summary>
-        public IEnumerable<string> TrouverLesMotLesPlusForts(Chevalet chevalet)
+        public IEnumerable<string> TrouverLesMotsLesPlusForts(Chevalet chevalet)
         {
             // Recherche des mots possibles pour l'ensemble des combinaisons possibles
-            var resultats = TrouverTousLesMots(chevalet.GetAllCombinaisons());
+            var resultats = TrouverTousLesMots(chevalet);
 
             // Récupération de la valeur du mot le plus fort
             var valeurMax = resultats.Max(mot => Mot.GetValeur(mot));
 
             // Récupération de tous les mots ayant cette valeur
             return resultats.Where(mot => Mot.GetValeur(mot) == valeurMax).ToList();
-        }
-
-        #endregion
-
-        #region Helpers
-
-        private IEnumerable<string> TrouverTousLesMots(IEnumerable<string> combinaisons)
-        {
-            Correspondances results = new Correspondances();
-
-            foreach (string combinaison in combinaisons)
-            {
-                // Recherche dans l'arbre des mots pouvant correspondre à cette combinaison de lettres
-                _racine.ChercherCorrespondances(string.Empty, combinaison, results);
-            }
-
-            return results.Distinct();
         }
 
         #endregion

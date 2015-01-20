@@ -8,7 +8,7 @@ namespace Dojo.Scrabble.Tests
         [TestMethod]
         public void TestSac()
         {
-            Sac sac = Sac.FromFile(@"C:\github\scrabble\Lettres.txt");
+            Sac sac = Sac.Charger(@"C:\github\scrabble\Lettres.txt");
 
             Assert.AreEqual(102, sac.Lettres.Length, "Nombre de lettres incorrectes");
             Assert.AreEqual(1, Lettre.GetValeur(sac.Lettres[0]));

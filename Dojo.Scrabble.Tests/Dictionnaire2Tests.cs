@@ -9,7 +9,7 @@ namespace Dojo.Scrabble.Tests
     public class Dictionnaire2Tests
     {
         static readonly Dictionnaire2 _dictionnaire = Dictionnaire2.Charger(@"C:\github\scrabble\ListeMots.txt");
-        static Sac _sac = Sac.FromFile(@"C:\github\scrabble\Lettres.txt"); // Il faut charger un sac pour avoir les valeurs des lettres
+        static Sac _sac = Sac.Charger(@"C:\github\scrabble\Lettres.txt"); // Il faut charger un sac pour avoir les valeurs des lettres
 
         private TestContext testContextInstance;
 
@@ -125,7 +125,7 @@ namespace Dojo.Scrabble.Tests
             TestContext.WriteLine("Temps de chargement du dictionnaire : {0} ms", elapsed);
 
             // Chargement du sac de lettres
-            elapsed = Chronometrer(() => Sac.FromFile(@"C:\github\scrabble\Lettres.txt"));
+            elapsed = Chronometrer(() => Sac.Charger(@"C:\github\scrabble\Lettres.txt"));
             TestContext.WriteLine("Temps de chargement du sac : {0} ms", elapsed);
 
             // Recherche des mots les plus longs

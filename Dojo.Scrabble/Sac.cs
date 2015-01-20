@@ -22,12 +22,12 @@ namespace Dojo.Scrabble
         /// <summary>
         /// Initialise le sac de lettres à partir d'un fichier
         /// </summary>
-        /// <param name="filePath"></param>
-        public static Sac FromFile(string filePath)
+        /// <param name="fichier"></param>
+        public static Sac Charger(string fichier)
         {
             Sac sac = new Sac();
 
-            string[] lignes = File.ReadAllLines(filePath);
+            string[] lignes = File.ReadAllLines(fichier);
 
             foreach (string ligne in lignes)
             {
