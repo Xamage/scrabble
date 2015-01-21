@@ -147,6 +147,22 @@ namespace Dojo.Scrabble.Tests
             TestContext.WriteLine("Temps de recherche des mots les plus forts pour 'T#I#STE' : {0} ms", elapsed);
         }
 
+        [TestMethod]
+        public void TestPerfs100()
+        {
+            string[] combinaisons = { "KKKKTZU", "AERDU#F", "ODBRSOD", "INRTOWS", "LXAKMUE", "TDQEVLH", "##AZRAW", "ZZZZZZZ", "RRODRSB", "TES#E#R" };
+
+            for (int i = 0; i < 100; i++)
+            {
+                foreach (string combinaison in combinaisons)
+                {
+                    Chevalet chevalet = new Chevalet(combinaison);
+
+                    _dictionnaire.TrouverLesMotsLesPlusLongs(chevalet);
+                }
+            }
+        }
+
         static long Chronometrer(Action action)
         {
             Stopwatch chrono = Stopwatch.StartNew();

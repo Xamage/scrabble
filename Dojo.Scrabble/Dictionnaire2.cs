@@ -63,6 +63,9 @@ namespace Dojo.Scrabble
             // Recherche des mots possibles pour l'ensemble des combinaisons possibles
             var resultats = TrouverTousLesMots(chevalet);
 
+            if (!resultats.Any())
+                return Enumerable.Empty<string>();
+
             // Récupération de la longueur du mot le plus long
             var longueurMax = resultats.Max(mot => mot.Length);
 
@@ -77,6 +80,9 @@ namespace Dojo.Scrabble
         {
             // Recherche des mots possibles pour l'ensemble des combinaisons possibles
             var resultats = TrouverTousLesMots(chevalet);
+
+            if (!resultats.Any())
+                return Enumerable.Empty<string>();
 
             // Récupération de la valeur du mot le plus fort
             var valeurMax = resultats.Max(mot => Mot.GetValeur(mot));
